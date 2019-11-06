@@ -3,7 +3,11 @@
 --Written by Jeffrey Friedl and modified by Eike Decker and Enrique García Cota.
 --Simplified for LuaJIT-only use by Cosmin Apreutesei. Public Domain.
 
-if not ... then require'sha1_test'; return end
+if not ... then
+   require'sha1_test'
+   require'sha1_hmac_test'
+   return
+end
 
 local band = bit.band
 local bor = bit.bor
@@ -132,6 +136,12 @@ function sha1.sha1(str)
 		schar(uint32_to_bytes(h2)) ..
 		schar(uint32_to_bytes(h3)) ..
 		schar(uint32_to_bytes(h4))
+end
+
+function sha1.hmac(message, key)
+   local hmac = require'hmac'
+   sha1.hmac = hmac.new(sha1.sha1, 64)
+   return sha1.hmac(message, key)
 end
 
 return sha1
